@@ -1,0 +1,16 @@
+#!/bin/sh
+
+SCRIPTS_DIR=$(dirname "$(realpath $0)")
+
+OS_TYPE=$(uname -s)
+ARCH_TYPE=$(uname -m)
+
+# Make a very simple check if we have a bundled binary for the right OS / architecture
+BIN_TARGET="$SCRIPTS_DIR/../Bin/$OS_TYPE/$ARCH_TYPE/prunner"
+
+if [ -f "$BIN_TARGET" ]; then
+    $BIN_TARGET
+else
+    echo "Unsupported OS or architecture"
+    exit 1
+fi

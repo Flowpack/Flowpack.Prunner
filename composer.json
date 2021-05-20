@@ -1,0 +1,24 @@
+{
+    "description": "Integration of prunner (an embedded pipeline task runner) in Neos",
+    "type": "neos-package",
+    "name": "flowpack/prunner",
+    "require": {
+        "neos/flow": "*",
+        "neos/neos": "^7",
+        "guzzlehttp/guzzle": "^7.3",
+        "firebase/php-jwt": "^5.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "Flowpack\\Prunner\\": "Classes/"
+        }
+    },
+    "bin": [
+        "Resources/Private/Scripts/prunner"
+    ],
+    "extra": {
+        "neos": {
+            "package-key": "Flowpack.Prunner"
+        }
+    }
+}

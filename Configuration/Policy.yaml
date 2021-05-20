@@ -1,0 +1,19 @@
+privilegeTargets:
+  'Neos\Neos\Security\Authorization\Privilege\ModulePrivilege':
+    'Flowpack.Prunner:BackendModule':
+      matcher: 'administration/prunner'
+
+  'Neos\Flow\Security\Authorization\Privilege\Method\MethodPrivilege':
+    'Flowpack.Prunner:ApiProxy':
+      label: Perform proxy requests to prunner API
+      matcher: 'method(Flowpack\Prunner\Controller\ProxyController->indexAction())'
+
+roles:
+  'Neos.Neos:Administrator':
+    privileges:
+      -
+        privilegeTarget: 'Flowpack.Prunner:BackendModule'
+        permission: GRANT
+      -
+        privilegeTarget: 'Flowpack.Prunner:ApiProxy'
+        permission: GRANT

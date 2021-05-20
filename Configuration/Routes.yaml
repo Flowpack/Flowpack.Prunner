@@ -1,0 +1,20 @@
+-
+  name: 'Prunner Frame'
+  uriPattern: 'neos/prunner/frame'
+  defaults:
+    '@package': 'Flowpack.Prunner'
+    '@controller': 'Backend'
+    '@format': 'html'
+    '@action': 'frame'
+  appendExceedingArguments: true
+
+-
+  name: 'Prunner API Proxy'
+  uriPattern: 'neos/prunner/proxy/{path}(/{subpath})'
+  defaults:
+    '@package': 'Flowpack.Prunner'
+    '@controller': 'Proxy'
+    '@format': 'json'
+    '@action': 'index'
+    subpath: ''
+  appendExceedingArguments: true

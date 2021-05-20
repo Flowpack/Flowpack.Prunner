@@ -1,0 +1,34 @@
+Flowpack:
+  Prunner:
+    # Base URL to prunner API
+    apiBaseUrl: 'http://localhost:9009/'
+    # Working directory of prunner for loading config
+    directory: '%FLOW_PATH_ROOT%'
+    # Explicitly set JWT secret if prunner config is not accessible
+    jwtSecret: ~
+
+Neos:
+  Neos:
+    modules:
+      'administration':
+        submodules:
+          'prunner':
+            label: 'Prunner'
+            controller: 'Flowpack\Prunner\Controller\BackendController'
+            description: 'Run custom pipelines with tasks'
+            icon: 'fas fa-exchange'
+
+  Flow:
+    security:
+      authentication:
+        providers:
+          'Neos.Neos:Backend':
+            requestPatterns:
+              'Flowpack.Prunner:Controllers':
+                pattern: 'ControllerObjectName'
+                patternOptions:
+                  controllerObjectNamePattern: 'Flowpack\Prunner\Controller\.*'
+    mvc:
+      routes:
+        'Flowpack.Prunner':
+          position: 'before Neos.Neos'
