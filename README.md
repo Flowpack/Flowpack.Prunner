@@ -34,7 +34,27 @@ composer install
 # prunner is now installed in your project root, as "prunner/prunner"
 ```
 
-Now, start up prunner 
+Now, start up prunner via the following command:
+
+```bash
+prunner/prunner --path Packages --data Data/Persistent/prunner
+```
+
+This will parse all packages for `pipelines.yml` files. 
+
+
+## Building the UI package
+
+In [prunner-ui](https://github.com/Flowpack/prunner-ui), run `yarn build`
+for the production build.
+
+Then, copy the `index.js` and `index.css` files to this package:
+
+```bash
+export PRUNNERUI=/path/to/prunner-ui
+cp $PRUNNERUI/build/dist/index.js* Resources/Public/prunner-ui/
+cp $PRUNNERUI/build/index.css Resources/Public/prunner-ui/index.css 
+```
 
 ## License
 
