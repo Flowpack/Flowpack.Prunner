@@ -19,6 +19,22 @@ A minimalistic React UI to start and view pipelines, jobs and task details.
 
 A Neos/Flow PHP package providing a backend module for the current pipeline state, and a PHP API.
 
+## Installation
+
+```bash
+# add the package
+composer require flowpack/prunner
+
+# patch main composer.json to add Flowpack\Prunner\Composer\InstallerScripts::postUpdateAndInstall to post-install-cmd and post-update-cmd 
+./flow prunner:setupProject
+
+# run composer install again, to download prunner.
+composer install
+
+# prunner is now installed in your project root, as "prunner/prunner"
+```
+
+Now, start up prunner 
 
 ## License
 
