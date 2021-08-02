@@ -41,7 +41,13 @@ class ProxyController extends \Neos\Flow\Mvc\Controller\ActionController
         if ($subpath !== '') {
             $apiPath .= '/' . $subpath;
         }
+        $queryString = $this->request->getHttpRequest()->getUri()->getQuery();
         $url = rtrim($this->apiBaseUrl, '/') . '/' . $apiPath;
+
+        if (strlen($queryString) > 0) {
+            $url .= '?' . $queryString;
+        }
+
 
         // Create JWT token for user
 
@@ -55,7 +61,7 @@ class ProxyController extends \Neos\Flow\Mvc\Controller\ActionController
             } catch (ParseException $e) {
                 $this->response->setContentType('application/json');
                 $this->response->setStatusCode(500);
-                return json_encode(['error' => 'Invalid prunner configuration']);
+                return json_encode(['error' => 'Invalid prunner configuration (could not read JWT secret)']);
             }
         }
 
