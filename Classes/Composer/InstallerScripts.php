@@ -55,7 +55,7 @@ EOD;
             echo '> Download complete.' . "\n";
 
             file_put_contents('Data/Temporary/prunner.tar.gz', $downloadedFileContents);
-            unlink('Data/Temporary/prunner.tar');
+            Files::unlink('Data/Temporary/prunner.tar');
 
             // decompress from gz
             $p = new PharData('Data/Temporary/prunner.tar.gz');
