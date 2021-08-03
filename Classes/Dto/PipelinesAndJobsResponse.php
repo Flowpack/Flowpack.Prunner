@@ -19,7 +19,7 @@ class PipelinesAndJobsResponse
         $this->jobs = $jobs;
     }
 
-    public function fromJsonArray(array $in): self
+    public static function fromJsonArray(array $in): self
     {
         $pipelines = Pipelines::fromJsonArray($in['pipelines']);
         $jobs = Jobs::fromJsonArray($in['jobs']);

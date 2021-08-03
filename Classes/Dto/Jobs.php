@@ -2,6 +2,7 @@
 
 namespace Flowpack\Prunner\Dto;
 
+use Flowpack\Prunner\ValueObject\PipelineName;
 use Neos\Flow\Annotations as Flow;
 
 /**
@@ -29,11 +30,11 @@ class Jobs implements \IteratorAggregate
         return new self($converted);
     }
 
-    public function forPipeline(string $pipeline): Jobs
+    public function forPipeline(PipelineName $pipeline): Jobs
     {
         $filteredJobs = [];
         foreach ($this->jobs as $job) {
-            if ($job->getPipeline() === $pipeline) {
+            if ($job->getPipeline() === $pipeline->getName()) {
                 $filteredJobs[] = $job;
             }
         }
@@ -42,7 +43,25 @@ class Jobs implements \IteratorAggregate
     }
 
     /**
-     * @return \Iterator<Job>
+     * Filter running jobs
+     *
+     * @return Jobs
+     */
+    public function running(): Jobs
+    {
+        $filteredJobs = [];
+        foreach ($this->jobs as $job) {
+            // running = started jobs which have not finished.
+            if ($job->getStart() !== null && !$job->getEnd()) {
+                $filteredJobs[] = $job;
+            }
+        }
+
+        return new self($filteredJobs);
+    }
+
+    /**
+     * @return \Iterator<Job>|Job[]
      */
     public function getIterator()
     {

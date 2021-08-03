@@ -3,6 +3,7 @@
 namespace Flowpack\Prunner;
 
 use Firebase\JWT\JWT;
+use Flowpack\Prunner\Dto\Job;
 use Flowpack\Prunner\Dto\PipelinesAndJobsResponse;
 use Flowpack\Prunner\ValueObject\JobId;
 use Flowpack\Prunner\ValueObject\PipelineName;
@@ -50,6 +51,13 @@ class PrunnerApiService
         return PipelinesAndJobsResponse::fromJsonArray($result);
     }
 
+    public function loadJobDetail(JobId $jobId): Job
+    {
+        $resultString = $this->apiCall('GET', 'job/detail?' . http_build_query(['id' => $jobId->getId()]), null)->getBody()->getContents();
+        $result = json_decode($resultString, true);
+        return Job::fromJsonArray($result);
+    }
+
     public function schedulePipeline(PipelineName $pipeline, array $variables): JobId
     {
         $response = $this->apiCall('POST', 'pipelines/schedule', json_encode([
@@ -62,6 +70,14 @@ class PrunnerApiService
         $contents = $response->getBody()->getContents();
         $tmp = json_decode($contents, true);
         return JobId::create($tmp['jobId']);
+    }
+
+    public function cancelJob(Job $job): void
+    {
+        $response = $this->apiCall('POST', 'job/cancel?' . http_build_query(['id' => $job->getId()]), '');
+        if ($response->getStatusCode() !== 200) {
+            throw new \RuntimeException('Cancelling a job should have returned status code 200, but got: ' . $response->getStatusCode());
+        }
     }
 
     /**
