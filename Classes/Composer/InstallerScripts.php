@@ -35,7 +35,7 @@ EOD;
         $platform = php_uname('s'); // stuff like Darwin etc
         $architecture = php_uname('m'); // x86_64
 
-        $version = '0.0.1';
+        $version = '0.1.0';
 
         $baseDirectory = 'prunner';
         $platformSpecificTargetDirectory = $baseDirectory . '/' . $platform . '_' . $architecture;
