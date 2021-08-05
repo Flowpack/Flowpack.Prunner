@@ -12,6 +12,9 @@ class PrunnerCommandController extends CommandController
     private const COMPOSER_INSTALL_CMD_KEY = 'post-install-cmd';
     private const COMPOSER_UPDATE_CMD_KEY = 'post-update-cmd';
 
+    /**
+     * Patch project's composer.json file to install prunner binaries on "composer install"
+     */
     public function setupProjectCommand()
     {
         $cmd = InstallerScripts::class . '::postUpdateAndInstall';

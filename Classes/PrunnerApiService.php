@@ -8,7 +8,6 @@ use Flowpack\Prunner\Dto\PipelinesAndJobsResponse;
 use Flowpack\Prunner\ValueObject\JobId;
 use Flowpack\Prunner\ValueObject\PipelineName;
 use GuzzleHttp\Client;
-use GuzzleHttp\Psr7\Response;
 use Neos\Flow\Annotations as Flow;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\Yaml\Exception\ParseException;

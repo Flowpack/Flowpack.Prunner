@@ -26,23 +26,39 @@ class Job
     private array $variables;
     private string $user;
 
+    private function __construct(string $id, string $pipeline, TaskResults $taskResults, bool $completed, bool $canceled, bool $errored, \DateTimeImmutable $created, ?\DateTimeImmutable $start, ?\DateTimeImmutable $end, ?string $lastError, array $variables, string $user)
+    {
+        $this->id = $id;
+        $this->pipeline = $pipeline;
+        $this->taskResults = $taskResults;
+        $this->completed = $completed;
+        $this->canceled = $canceled;
+        $this->errored = $errored;
+        $this->created = $created;
+        $this->start = $start;
+        $this->end = $end;
+        $this->lastError = $lastError;
+        $this->variables = $variables;
+        $this->user = $user;
+    }
+
+
     public static function fromJsonArray(array $in): self
     {
-        $job = new static();
-        $job->id = $in['id'];
-        $job->pipeline = $in['pipeline'];
-        $job->taskResults = TaskResults::fromJsonArray($in['tasks']);;
-        $job->completed = $in['completed'];
-        $job->canceled = $in['canceled'];
-        $job->errored = $in['errored'];
-        $job->created = \DateTimeImmutable::createFromFormat(\DateTimeInterface::W3C, $in['created']);
-        $job->start = isset($in['start']) ? \DateTimeImmutable::createFromFormat(\DateTimeInterface::W3C, $in['start']) : null;
-        $job->end = isset($in['end']) ? \DateTimeImmutable::createFromFormat(\DateTimeInterface::W3C, $in['end']) : null;
-        $job->lastError = $in['lastError'];
-        $job->variables = $in['variables'] ?? [];
-        $job->user = $in['user'];
-
-        return $job;
+        return new self(
+            $in['id'],
+            $in['pipeline'],
+            TaskResults::fromJsonArray($in['tasks']),
+            $in['completed'],
+            $in['canceled'],
+            $in['errored'],
+            \DateTimeImmutable::createFromFormat(\DateTimeInterface::W3C, $in['created']),
+            isset($in['start']) ? \DateTimeImmutable::createFromFormat(\DateTimeInterface::W3C, $in['start']) : null,
+            isset($in['end']) ? \DateTimeImmutable::createFromFormat(\DateTimeInterface::W3C, $in['end']) : null,
+            $in['lastError'] ?? '',
+            $in['variables'] ?? [],
+            $in['user']
+        );
     }
 
     /**

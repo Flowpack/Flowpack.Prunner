@@ -19,19 +19,31 @@ class TaskResult
     private bool $errored;
     private ?string $error;
 
+    private function __construct(string $name, string $status, ?\DateTimeImmutable $start, ?\DateTimeImmutable $end, bool $skipped, int $exitCode, bool $errored, ?string $error)
+    {
+        $this->name = $name;
+        $this->status = $status;
+        $this->start = $start;
+        $this->end = $end;
+        $this->skipped = $skipped;
+        $this->exitCode = $exitCode;
+        $this->errored = $errored;
+        $this->error = $error;
+    }
+
+
     public static function fromJsonArray(array $in): self
     {
-        $taskResult = new static();
-        $taskResult->name = $in['name'];
-        $taskResult->status = $in['status'];
-        $taskResult->start = isset($in['start']) ? \DateTimeImmutable::createFromFormat(\DateTimeInterface::RFC3339, $in['start']) : null;
-        $taskResult->end = isset($in['end']) ? \DateTimeImmutable::createFromFormat(\DateTimeInterface::RFC3339, $in['end']) : null;
-        $taskResult->skipped = $in['skipped'];
-        $taskResult->exitCode = $in['exitCode'];
-        $taskResult->errored = $in['errored'];
-        $taskResult->error = $in['error'];
-
-        return $taskResult;
+        return new self(
+            $in['name'],
+            $in['status'],
+            isset($in['start']) ? \DateTimeImmutable::createFromFormat(\DateTimeInterface::RFC3339, $in['start']) : null,
+            isset($in['end']) ? \DateTimeImmutable::createFromFormat(\DateTimeInterface::RFC3339, $in['end']) : null,
+            $in['skipped'],
+            $in['exitCode'],
+            $in['errored'],
+            $in['error'] ?? ''
+        );
     }
 
     /**
