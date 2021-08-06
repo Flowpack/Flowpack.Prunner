@@ -19,6 +19,13 @@ class TaskResult
     private bool $errored;
     private ?string $error;
 
+    public const STATUS_WAITING = 'waiting';
+    public const STATUS_RUNNING = 'running';
+    public const STATUS_SKIPPED = 'skipped';
+    public const STATUS_DONE = 'done';
+    public const STATUS_ERROR = 'error';
+    public const STATUS_CANCELED = 'canceled';
+
     private function __construct(string $name, string $status, ?\DateTimeImmutable $start, ?\DateTimeImmutable $end, bool $skipped, int $exitCode, bool $errored, ?string $error)
     {
         $this->name = $name;
@@ -55,6 +62,8 @@ class TaskResult
     }
 
     /**
+     * see the STATUS_* constants here.
+     *
      * @return string
      */
     public function getStatus(): string
