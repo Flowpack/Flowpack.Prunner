@@ -4,6 +4,7 @@ namespace Flowpack\Prunner;
 
 use Firebase\JWT\JWT;
 use Flowpack\Prunner\Dto\Job;
+use Flowpack\Prunner\Dto\JobLogs;
 use Flowpack\Prunner\Dto\PipelinesAndJobsResponse;
 use Flowpack\Prunner\ValueObject\JobId;
 use Flowpack\Prunner\ValueObject\PipelineName;
@@ -55,6 +56,13 @@ class PrunnerApiService
         $resultString = $this->apiCall('GET', 'job/detail?' . http_build_query(['id' => $jobId->getId()]), null)->getBody()->getContents();
         $result = json_decode($resultString, true);
         return Job::fromJsonArray($result);
+    }
+
+    public function loadJobLogs(JobId $jobId, string $taskName): JobLogs
+    {
+        $resultString = $this->apiCall('GET', 'job/logs?' . http_build_query(['id' => $jobId->getId(), 'task' => $taskName]), null)->getBody()->getContents();
+        $result = json_decode($resultString, true);
+        return JobLogs::fromJsonArray($result);
     }
 
     public function schedulePipeline(PipelineName $pipeline, array $variables): JobId
