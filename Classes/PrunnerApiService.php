@@ -81,7 +81,7 @@ class PrunnerApiService
 
     public function cancelJob(Job $job): void
     {
-        $response = $this->apiCall('POST', 'job/cancel?' . http_build_query(['id' => $job->getId()]), '');
+        $response = $this->apiCall('POST', 'job/cancel?' . http_build_query(['id' => $job->getId()->getId()]), '');
         if ($response->getStatusCode() !== 200) {
             throw new \RuntimeException('Cancelling a job should have returned status code 200, but got: ' . $response->getStatusCode());
         }

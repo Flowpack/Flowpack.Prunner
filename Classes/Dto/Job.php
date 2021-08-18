@@ -3,6 +3,7 @@
 
 namespace Flowpack\Prunner\Dto;
 
+use Flowpack\Prunner\ValueObject\JobId;
 use Neos\Flow\Annotations as Flow;
 
 /**
@@ -10,7 +11,7 @@ use Neos\Flow\Annotations as Flow;
  */
 class Job
 {
-    private string $id;
+    private JobId $id;
     /**
      * @var string Pipeline name
      */
@@ -26,7 +27,7 @@ class Job
     private array $variables;
     private string $user;
 
-    private function __construct(string $id, string $pipeline, TaskResults $taskResults, bool $completed, bool $canceled, bool $errored, \DateTimeImmutable $created, ?\DateTimeImmutable $start, ?\DateTimeImmutable $end, ?string $lastError, array $variables, string $user)
+    private function __construct(JobId $id, string $pipeline, TaskResults $taskResults, bool $completed, bool $canceled, bool $errored, \DateTimeImmutable $created, ?\DateTimeImmutable $start, ?\DateTimeImmutable $end, ?string $lastError, array $variables, string $user)
     {
         $this->id = $id;
         $this->pipeline = $pipeline;
@@ -46,7 +47,7 @@ class Job
     public static function fromJsonArray(array $in): self
     {
         return new self(
-            $in['id'],
+            JobId::create($in['id']),
             $in['pipeline'],
             TaskResults::fromJsonArray($in['tasks']),
             $in['completed'],
@@ -64,7 +65,7 @@ class Job
     /**
      * @return string
      */
-    public function getId(): string
+    public function getId(): JobId
     {
         return $this->id;
     }
