@@ -51,10 +51,13 @@ class PrunnerApiService
         return PipelinesAndJobsResponse::fromJsonArray($result);
     }
 
-    public function loadJobDetail(JobId $jobId): Job
+    public function loadJobDetail(JobId $jobId): ?Job
     {
         $resultString = $this->apiCall('GET', 'job/detail?' . http_build_query(['id' => $jobId->getId()]), null)->getBody()->getContents();
         $result = json_decode($resultString, true);
+        if (isset($result['error'])) {
+            return null;
+        }
         return Job::fromJsonArray($result);
     }
 
