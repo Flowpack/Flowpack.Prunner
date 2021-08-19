@@ -29,13 +29,20 @@ else
 fi
 EOD;
 
+    const DEFAULT_VERSION_TO_INSTALL = '0.2.0';
 
     public static function postUpdateAndInstall(Event $event)
     {
         $platform = php_uname('s'); // stuff like Darwin etc
         $architecture = php_uname('m'); // x86_64
 
-        $version = '0.2.0';
+        $extra = $event->getComposer()->getPackage()->getExtra();
+        $version = self::DEFAULT_VERSION_TO_INSTALL;
+        $versionMessage = '';
+        if (isset($extra['prunner-version'])) {
+            $version = $extra['prunner-version'];
+            $versionMessage = ' (OVERRIDDEN in composer.json)';
+        }
 
         $baseDirectory = 'prunner';
         $platformSpecificTargetDirectory = $baseDirectory . '/' . $platform . '_' . $architecture;
@@ -47,7 +54,7 @@ EOD;
         }
         if (!file_exists($platformSpecificTargetDirectory . '/prunner')) {
             echo '> Downloading prunner from https://github.com/Flowpack/prunner' . "\n";
-            echo '> Version:      ' . $version . "\n";
+            echo '> Version:      ' . $version . $versionMessage . "\n";
             echo '> Platform:     ' . $platform . "\n";
             echo '> Architecture: ' . $architecture . "\n";
             $downloadLink = sprintf('https://github.com/Flowpack/prunner/releases/download/v%s/prunner_%s_%s_%s.tar.gz', $version, $version, $platform, $architecture);

@@ -42,6 +42,18 @@ prunner/prunner --path Packages --data Data/Persistent/prunner
 
 This will parse all packages for `pipelines.yml` files. 
 
+## Overriding the Prunner Version
+
+By default, the prunner version configured in `Flowpack\Prunner\Composer\InstallerScripts::DEFAULT_VERSION_TO_INSTALL`
+will be downloaded. However, it is possible to override this via `extra.prunner-version` in the root `composer.json`:
+
+```json
+{
+  "extra": {
+    "prunner-version": "0.4.0"
+  }
+}
+```
 
 ## Building the UI package
 
