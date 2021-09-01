@@ -29,7 +29,7 @@ else
 fi
 EOD;
 
-    const DEFAULT_VERSION_TO_INSTALL = '0.4.0';
+    const DEFAULT_VERSION_TO_INSTALL = '0.5.1';
 
     public static function postUpdateAndInstall(Event $event)
     {
