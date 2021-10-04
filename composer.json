@@ -2,6 +2,7 @@
     "description": "Integration of prunner (an embedded pipeline task runner) in Neos",
     "type": "neos-package",
     "name": "flowpack/prunner",
+    "license": "MIT",
     "require": {
         "neos/flow": "*",
         "neos/neos": "^7",
