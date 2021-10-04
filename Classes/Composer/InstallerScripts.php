@@ -13,6 +13,20 @@ class InstallerScripts
     private const PRUNNER_DISPATCH_SCRIPT = <<<'EOD'
 #!/bin/sh
 
+# Polyfill for realpath which is not available on macOS per default (see https://stackoverflow.com/a/18443300)
+realpath() {
+    OURPWD=$PWD
+    cd "$(dirname "$1")"
+    LINK=$(readlink "$(basename "$1")")
+    while [ "$LINK" ]; do
+        cd "$(dirname "$LINK")"
+        LINK=$(readlink "$(basename "$1")")
+    done
+    REALPATH="$PWD/$(basename "$1")"
+    cd "$OURPWD"
+    echo "$REALPATH"
+}
+
 SCRIPTS_DIR=$(dirname "$(realpath $0)")
 
 OS_TYPE=$(uname -s)
