@@ -73,7 +73,7 @@ class PrunnerApiService
         $response = $this->apiCall('POST', 'pipelines/schedule', json_encode([
             'pipeline' => $pipeline->getName(),
             'variables' => $variables
-        ]));
+        ], JSON_FORCE_OBJECT));
         if ($response->getStatusCode() !== 202) {
             throw new \RuntimeException('Scheduling a new pipeline run should have returned status code 202, but got: ' . $response->getStatusCode());
         }
