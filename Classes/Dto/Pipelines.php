@@ -12,7 +12,7 @@ class Pipelines implements \IteratorAggregate
 {
     protected array $pipelines;
 
-    public function fromJsonArray(array $in): self
+    public static function fromJsonArray(array $in): self
     {
         $converted = [];
         foreach ($in as $el) {

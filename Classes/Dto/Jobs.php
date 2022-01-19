@@ -21,7 +21,7 @@ class Jobs implements \IteratorAggregate
     }
 
 
-    public function fromJsonArray(array $in): self
+    public static function fromJsonArray(array $in): self
     {
         $converted = [];
         foreach ($in as $el) {

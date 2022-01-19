@@ -21,7 +21,7 @@ final class TaskResults implements \IteratorAggregate, \Countable, ProtectedCont
     }
 
 
-    public function fromJsonArray(array $in): self
+    public static function fromJsonArray(array $in): self
     {
         $converted = [];
         foreach ($in as $el) {
