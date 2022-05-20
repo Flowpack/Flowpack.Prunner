@@ -73,9 +73,9 @@ EOD;
             echo '> Platform:     ' . $platform . "\n";
             echo '> Architecture: ' . $architecture . "\n";
 
-            $httpClient = new Client();
             $downloadLink = sprintf('https://github.com/Flowpack/prunner/releases/download/v%s/prunner_%s_%s_%s.tar.gz', $version, $version, $platform, $architecture);
-            $downloadedFileContents = $httpClient->get($downloadLink)->getBody()->getContents();
+            $httpClient = new Client();
+            $httpClient->get($downloadLink, ['sink' => 'Data/Temporary/prunner.tar.gz']);
             echo '> Download complete.' . "\n";
 
             file_put_contents('Data/Temporary/prunner.tar.gz', $downloadedFileContents);
