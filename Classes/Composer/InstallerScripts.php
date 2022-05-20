@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Flowpack\Prunner\Composer;
 
 use Composer\Script\Event;
+use GuzzleHttp\Client;
 use Neos\Utility\Files;
 use PharData;
 
@@ -71,8 +72,10 @@ EOD;
             echo '> Version:      ' . $version . $versionMessage . "\n";
             echo '> Platform:     ' . $platform . "\n";
             echo '> Architecture: ' . $architecture . "\n";
+
             $downloadLink = sprintf('https://github.com/Flowpack/prunner/releases/download/v%s/prunner_%s_%s_%s.tar.gz', $version, $version, $platform, $architecture);
-            $downloadedFileContents = file_get_contents($downloadLink);
+            $httpClient = new Client();
+            $httpClient->get($downloadLink, ['sink' => 'Data/Temporary/prunner.tar.gz']);
             echo '> Download complete.' . "\n";
 
             file_put_contents('Data/Temporary/prunner.tar.gz', $downloadedFileContents);
