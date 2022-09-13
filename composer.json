@@ -5,7 +5,7 @@
     "license": "MIT",
     "require": {
         "neos/flow": "*",
-        "neos/neos": "^7",
+        "neos/neos": "^7.0 || ^8.0",
         "guzzlehttp/guzzle": "^7.3",
         "firebase/php-jwt": "^5.2"
     },
