@@ -20,6 +20,10 @@
     "extra": {
         "neos": {
             "package-key": "Flowpack.Prunner"
+        },
+        "neos/flow": {
+            "post-install": "Flowpack\\Prunner\\Composer\\InstallerScripts::postUpdateAndInstall",
+            "post-update": "Flowpack\\Prunner\\Composer\\InstallerScripts::postUpdateAndInstall"
         }
     }
 }

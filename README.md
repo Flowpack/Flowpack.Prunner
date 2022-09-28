@@ -22,16 +22,7 @@ A Neos/Flow PHP package providing a backend module for the current pipeline stat
 ## Installation
 
 ```bash
-# add the package
 composer require flowpack/prunner
-
-# patch main composer.json to add Flowpack\Prunner\Composer\InstallerScripts::postUpdateAndInstall to post-install-cmd and post-update-cmd 
-./flow prunner:setupProject
-
-# run composer install again, to download prunner.
-composer install
-
-# prunner is now installed in your project root, as "prunner/prunner"
 ```
 
 Now, start up prunner via the following command:
@@ -40,7 +31,7 @@ Now, start up prunner via the following command:
 prunner/prunner --path Packages --data Data/Persistent/prunner
 ```
 
-This will parse all packages for `pipelines.yml` files. 
+This will parse all packages for `pipelines.yml` files.
 
 ## Overriding the Prunner Version
 
@@ -65,7 +56,7 @@ Then, copy the `index.js` and `index.css` files to this package:
 ```bash
 export PRUNNERUI=/path/to/prunner-ui
 cp $PRUNNERUI/build/dist/index.js* Resources/Public/prunner-ui/
-cp $PRUNNERUI/build/index.css Resources/Public/prunner-ui/index.css 
+cp $PRUNNERUI/build/index.css Resources/Public/prunner-ui/index.css
 ```
 
 ## License
