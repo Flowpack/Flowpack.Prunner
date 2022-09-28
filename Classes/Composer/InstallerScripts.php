@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Flowpack\Prunner\Composer;
 
-use Composer\Script\Event;
+use GuzzleHttp\Client;
 use Neos\Utility\Files;
 use PharData;
 
@@ -45,12 +45,13 @@ EOD;
 
     const DEFAULT_VERSION_TO_INSTALL = '0.8.1';
 
-    public static function postUpdateAndInstall(Event $event)
+    public static function postUpdateAndInstall()
     {
         $platform = php_uname('s'); // stuff like Darwin etc
         $architecture = php_uname('m'); // x86_64
 
-        $extra = $event->getComposer()->getPackage()->getExtra();
+        $composerJson = json_decode(file_get_contents('composer.json'), true);
+        $extra = isset($composerJson['extra']) ? $composerJson['extra'] : [];
         $version = self::DEFAULT_VERSION_TO_INSTALL;
         $versionMessage = '';
         if (isset($extra['prunner-version'])) {
@@ -71,11 +72,12 @@ EOD;
             echo '> Version:      ' . $version . $versionMessage . "\n";
             echo '> Platform:     ' . $platform . "\n";
             echo '> Architecture: ' . $architecture . "\n";
-            $downloadLink = sprintf('https://github.com/Flowpack/prunner/releases/download/v%s/prunner_%s_%s_%s.tar.gz', $version, $version, $platform, $architecture);
-            $downloadedFileContents = file_get_contents($downloadLink);
+
+            $downloadLink = sprintf('https://github.com/Flowpack/prunner/releases/download/v%1$s/prunner_%1$s_%2$s_%3$s.tar.gz', $version, $platform, $architecture);
+            $httpClient = new Client();
+            $httpClient->get($downloadLink, ['sink' => 'Data/Temporary/prunner.tar.gz']);
             echo '> Download complete.' . "\n";
 
-            file_put_contents('Data/Temporary/prunner.tar.gz', $downloadedFileContents);
             Files::unlink('Data/Temporary/prunner.tar');
 
             // decompress from gz
