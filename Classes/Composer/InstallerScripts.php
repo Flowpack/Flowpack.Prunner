@@ -10,39 +10,6 @@ use PharData;
 class InstallerScripts
 {
 
-    private const PRUNNER_DISPATCH_SCRIPT = <<<'EOD'
-#!/bin/sh
-
-# Polyfill for realpath which is not available on macOS per default (see https://stackoverflow.com/a/18443300)
-realpath() {
-    OURPWD=$PWD
-    cd "$(dirname "$1")"
-    LINK=$(readlink "$(basename "$1")")
-    while [ "$LINK" ]; do
-        cd "$(dirname "$LINK")"
-        LINK=$(readlink "$(basename "$1")")
-    done
-    REALPATH="$PWD/$(basename "$1")"
-    cd "$OURPWD"
-    echo "$REALPATH"
-}
-
-SCRIPTS_DIR=$(dirname "$(realpath $0)")
-
-OS_TYPE=$(uname -s)
-ARCH_TYPE=$(uname -m)
-
-# Make a very simple check if we have a bundled binary for the right OS / architecture
-BIN_TARGET="${SCRIPTS_DIR}/${OS_TYPE}_${ARCH_TYPE}/prunner"
-
-if [ -f "$BIN_TARGET" ]; then
-    $BIN_TARGET $@
-else
-    echo "Unsupported OS or architecture"
-    exit 1
-fi
-EOD;
-
     const DEFAULT_VERSION_TO_INSTALL = '0.8.1';
 
     public static function postUpdateAndInstall()
@@ -94,8 +61,5 @@ EOD;
 
             echo '> Prunner extracted to ' . $platformSpecificTargetDirectory . "\n";
         }
-
-        file_put_contents($baseDirectory . '/prunner', self::PRUNNER_DISPATCH_SCRIPT);
-        chmod($baseDirectory . '/prunner', 0755);
     }
 }
