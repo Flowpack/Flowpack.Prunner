@@ -73,6 +73,9 @@ EOD;
             echo '> Platform:     ' . $platform . "\n";
             echo '> Architecture: ' . $architecture . "\n";
 
+            // Ensure Data/Temporary folder exists
+            Files::createDirectoryRecursively("Data/Temporary");
+
             $downloadLink = sprintf('https://github.com/Flowpack/prunner/releases/download/v%1$s/prunner_%1$s_%2$s_%3$s.tar.gz', $version, $platform, $architecture);
             $httpClient = new Client();
             $httpClient->get($downloadLink, ['sink' => 'Data/Temporary/prunner.tar.gz']);
