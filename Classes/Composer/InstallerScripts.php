@@ -77,6 +77,8 @@ EOD;
             Files::createDirectoryRecursively("Data/Temporary");
 
             $downloadLink = sprintf('https://github.com/Flowpack/prunner/releases/download/v%1$s/prunner_%1$s_%2$s_%3$s.tar.gz', $version, $platform, $architecture);
+            // Workaround for Dockerized M1 Macs:
+            $downloadLink = str_replace('Linux_aarch64.tar.gz', 'Linux_arm64.tar.gz', $downloadLink);
             $httpClient = new Client();
             $httpClient->get($downloadLink, ['sink' => 'Data/Temporary/prunner.tar.gz']);
             echo '> Download complete.' . "\n";
