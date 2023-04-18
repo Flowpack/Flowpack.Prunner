@@ -114,7 +114,8 @@ class PrunnerApiService
 
         // There are usecases where we want to call prunner from the CLI. We don't have an initialized user there, thus we
         // hardcode it to 'cli' in these cases. The account identifier in prunner is only used for e.g. log messages.
-        $accountIdentifier = $this->context->isInitialized() ? $this->context->getAccount()->getAccountIdentifier() : 'cli';
+        $account = $this->context->isInitialized() ? $this->context->getAccount() : null;
+        $accountIdentifier = $account ? $account->getAccountIdentifier() : 'cli';
         // Generate JWT token on the fly with expiration in 60 seconds
         $authToken = JWT::encode(['sub' => $accountIdentifier, 'exp' => time() + 60], $jwtSecret, 'HS256');
         $client = new Client();
