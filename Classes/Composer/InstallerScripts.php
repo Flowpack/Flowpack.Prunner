@@ -45,6 +45,14 @@ EOD;
 
     const DEFAULT_VERSION_TO_INSTALL = '1.0.1';
 
+    /**
+     * Downloads the prunner binaries from https://github.com/Flowpack/prunner to ./prunner.
+     *
+     * You can pin the prunner version in the composer.json#extra.prunner-version field.
+     * You can also set it to 'skip-download' to skip the download.
+     *
+     * @return void
+     */
     public static function postUpdateAndInstall()
     {
         $platform = php_uname('s'); // stuff like Darwin etc
@@ -57,6 +65,10 @@ EOD;
         if (isset($extra['prunner-version'])) {
             $version = $extra['prunner-version'];
             $versionMessage = ' (OVERRIDDEN in composer.json)';
+        }
+        if ($version === 'skip-download') {
+            echo '> Not downloading prunner (due to "skip-download" instruction in composer.json)';
+            return;
         }
 
         $baseDirectory = 'prunner';

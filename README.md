@@ -46,6 +46,20 @@ will be downloaded. However, it is possible to override this via `extra.prunner-
 }
 ```
 
+## Skip the Prunner binary download
+
+In case you want to install Prunner manually,
+you can skip the download of the Prunner entirely
+by setting `extra.prunner-version` in the root `composer.json` to `"skip-download"`.
+
+```json
+{
+  "extra": {
+    "prunner-version": "skip-download"
+  }
+}
+```
+
 ## Building the UI package
 
 In [prunner-ui](https://github.com/Flowpack/prunner-ui), run `yarn build`
