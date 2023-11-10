@@ -23,6 +23,12 @@ class ProxyController extends \Neos\Flow\Mvc\Controller\ActionController
     protected $directory;
 
     /**
+     * @Flow\InjectConfiguration(path="configFile")
+     * @var string
+     */
+    protected $configFile;
+
+    /**
      * @Flow\InjectConfiguration(path="jwtSecret")
      * @var string
      */
@@ -56,9 +62,8 @@ class ProxyController extends \Neos\Flow\Mvc\Controller\ActionController
         } else {
             try {
                 // Try to parse prunner config to get JWT secret
-                $config = Yaml::parseFile($this->directory . '/.prunner.yml');
-                $jwtSecret = $config['jwt_secret'];
-            } catch (ParseException $e) {
+                $jwtSecret = $this->loadJwtSecretFromConfigFile();
+            } catch (\RuntimeException $e) {
                 $this->response->setContentType('application/json');
                 $this->response->setStatusCode(500);
                 return json_encode(['error' => 'Invalid prunner configuration (could not read JWT secret)']);
@@ -86,5 +91,27 @@ class ProxyController extends \Neos\Flow\Mvc\Controller\ActionController
         $this->response->setStatusCode($response->getStatusCode());
 
         return $response->getBody();
+    }
+
+    /**
+     * @return string
+     */
+    private function loadJwtSecretFromConfigFile(): string
+    {
+        if ($this->configFile && file_exists($this->configFile)) {
+            $path = $this->configFile;
+        } elseif ($this->directory && file_exists($this->directory . '/.prunner.yml')) {
+            $path = $this->directory . '/.prunner.yml';
+        } else {
+            throw new \RuntimeException("Failed to locate prunner config file at " . $this->configFile . " or " . $this->directory . '/.prunner.yml');
+        }
+        try {
+            // Try to parse prunner config to get JWT secret
+            $config = Yaml::parseFile($path);
+            $jwtSecret = $config['jwt_secret'];
+        } catch (ParseException $e) {
+            throw new \RuntimeException('Invalid prunner configuration (could not read JWT secret)');
+        }
+        return $jwtSecret;
     }
 }

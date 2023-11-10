@@ -33,6 +33,12 @@ class PrunnerApiService
     protected $directory;
 
     /**
+     * @Flow\InjectConfiguration(path="configFile")
+     * @var string
+     */
+    protected $configFile;
+
+    /**
      * @Flow\InjectConfiguration(path="jwtSecret")
      * @var string
      */
@@ -103,13 +109,7 @@ class PrunnerApiService
         if (!empty($this->jwtSecret)) {
             $jwtSecret = $this->jwtSecret;
         } else {
-            try {
-                // Try to parse prunner config to get JWT secret
-                $config = Yaml::parseFile($this->directory . '/.prunner.yml');
-                $jwtSecret = $config['jwt_secret'];
-            } catch (ParseException $e) {
-                throw new \RuntimeException('Invalid prunner configuration (could not read JWT secret)');
-            }
+            $jwtSecret = $this->loadJwtSecretFromConfigFile();
         }
 
         // There are usecases where we want to call prunner from the CLI. We don't have an initialized user there, thus we
@@ -122,4 +122,25 @@ class PrunnerApiService
         return $client->request($method, $url, ['headers' => ['Authorization' => 'Bearer ' . $authToken], 'body' => $body, 'http_errors' => false]);
     }
 
+    /**
+     * @return string
+     */
+    private function loadJwtSecretFromConfigFile(): string
+    {
+        if ($this->configFile && file_exists($this->configFile)) {
+            $path = $this->configFile;
+        } elseif ($this->directory && file_exists($this->directory . '/.prunner.yml')) {
+            $path = $this->directory . '/.prunner.yml';
+        } else {
+            throw new \RuntimeException("Failed to locate prunner config file at " . $this->configFile . " or " . $this->directory . '/.prunner.yml');
+        }
+        try {
+            // Try to parse prunner config to get JWT secret
+            $config = Yaml::parseFile($path);
+            $jwtSecret = $config['jwt_secret'];
+        } catch (ParseException $e) {
+            throw new \RuntimeException('Invalid prunner configuration (could not read JWT secret)');
+        }
+        return $jwtSecret;
+    }
 }

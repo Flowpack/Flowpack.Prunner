@@ -3,7 +3,10 @@ Flowpack:
     # Base URL to prunner API
     apiBaseUrl: 'http://localhost:9009/'
     # Working directory of prunner for loading config
+    # DEPRECATED: use configFile
     directory: '%FLOW_PATH_ROOT%'
+    # Path to the prunner config file to load the JWT secret for authentication
+    configFile: '%FLOW_PATH_ROOT%/.prunner.yml'
     # Explicitly set JWT secret if prunner config is not accessible
     jwtSecret: ~
 
