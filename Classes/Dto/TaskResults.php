@@ -139,6 +139,13 @@ final class TaskResults implements \IteratorAggregate, \Countable, ProtectedCont
     }
 
     /**
+     * @return TaskResult[]
+     */
+    public function getArray(): array  {
+        return $this->taskResults;
+    }
+
+    /**
      * @return \Iterator<TaskResult>
      */
     public function getIterator()

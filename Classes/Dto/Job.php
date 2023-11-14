@@ -63,7 +63,7 @@ class Job
     }
 
     /**
-     * @return string
+     * @return JobId
      */
     public function getId(): JobId
     {

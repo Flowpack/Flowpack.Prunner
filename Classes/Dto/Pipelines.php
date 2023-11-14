@@ -24,6 +24,13 @@ class Pipelines implements \IteratorAggregate
         return $pipelines;
     }
 
+    /**
+     * @return Pipeline[]
+     */
+    public function getArray(): array
+    {
+        return $this->pipelines;
+    }
 
     /**
      * @return \Iterator<Pipeline>
