@@ -9,6 +9,7 @@ use Flowpack\Prunner\Dto\PipelinesAndJobsResponse;
 use Flowpack\Prunner\ValueObject\JobId;
 use Flowpack\Prunner\ValueObject\PipelineName;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
 use Neos\Flow\Annotations as Flow;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\Yaml\Exception\ParseException;
@@ -53,14 +54,25 @@ class PrunnerApiService
     public function loadPipelinesAndJobs(): PipelinesAndJobsResponse
     {
         $resultString = $this->apiCall('GET', 'pipelines/jobs', null)->getBody()->getContents();
-        $result = json_decode($resultString, true);
+        try {
+            $result = json_decode($resultString, true, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException $e) {
+            throw new \RuntimeException('Could not decode JSON response from prunner API: ' . $e->getMessage(), 1707485801);
+        }
         return PipelinesAndJobsResponse::fromJsonArray($result);
     }
 
+    /**
+     * @throws \JsonException
+     */
     public function loadJobDetail(JobId $jobId): ?Job
     {
         $resultString = $this->apiCall('GET', 'job/detail?' . http_build_query(['id' => $jobId->getId()]), null)->getBody()->getContents();
-        $result = json_decode($resultString, true);
+        try {
+            $result = json_decode($resultString, true, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException $e) {
+            throw new \RuntimeException('Could not decode JSON response from prunner API: ' . $e->getMessage(), 1707485815);
+        }
         if (isset($result['error'])) {
             return null;
         }
@@ -70,22 +82,33 @@ class PrunnerApiService
     public function loadJobLogs(JobId $jobId, string $taskName): JobLogs
     {
         $resultString = $this->apiCall('GET', 'job/logs?' . http_build_query(['id' => $jobId->getId(), 'task' => $taskName]), null)->getBody()->getContents();
-        $result = json_decode($resultString, true);
+        try {
+            $result = json_decode($resultString, true, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException $e) {
+            throw new \RuntimeException('Could not decode JSON response from prunner API: ' . $e->getMessage(), 1707485821);
+        }
         return JobLogs::fromJsonArray($result);
     }
 
+    /**
+     * @throws \JsonException
+     */
     public function schedulePipeline(PipelineName $pipeline, array $variables): JobId
     {
         $response = $this->apiCall('POST', 'pipelines/schedule', json_encode([
             'pipeline' => $pipeline->getName(),
             'variables' => $variables
-        ], JSON_FORCE_OBJECT));
+        ], JSON_THROW_ON_ERROR | JSON_FORCE_OBJECT));
         if ($response->getStatusCode() !== 202) {
             throw new \RuntimeException('Scheduling a new pipeline run should have returned status code 202, but got: ' . $response->getStatusCode());
         }
         $contents = $response->getBody()->getContents();
-        $tmp = json_decode($contents, true);
-        return JobId::create($tmp['jobId']);
+        try {
+            $result = json_decode($contents, true, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException $e) {
+            throw new \RuntimeException('Could not decode JSON response from prunner API: ' . $e->getMessage(), 1707485793);
+        }
+        return JobId::create($result['jobId']);
     }
 
     public function cancelJob(Job $job): void
@@ -99,9 +122,7 @@ class PrunnerApiService
     /**
      * Low-Level method, handling only the authentication.
      *
-     * @param string $method
-     * @param string $subpath
-     * @param string|null $body
+     * @throws GuzzleException
      */
     public function apiCall(string $method, string $subpath, ?string $body): ResponseInterface
     {
@@ -122,9 +143,6 @@ class PrunnerApiService
         return $client->request($method, $url, ['headers' => ['Authorization' => 'Bearer ' . $authToken], 'body' => $body, 'http_errors' => false]);
     }
 
-    /**
-     * @return string
-     */
     private function loadJwtSecretFromConfigFile(): string
     {
         if ($this->configFile && file_exists($this->configFile)) {
