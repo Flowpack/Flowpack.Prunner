@@ -8,6 +8,7 @@ use Flowpack\Prunner\Dto\JobLogs;
 use Flowpack\Prunner\Dto\PipelinesAndJobsResponse;
 use Flowpack\Prunner\ValueObject\JobId;
 use Flowpack\Prunner\ValueObject\PipelineName;
+use Flowpack\Prunner\ValueObject\QueuePartitionName;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Neos\Flow\Annotations as Flow;
@@ -91,14 +92,21 @@ class PrunnerApiService
     }
 
     /**
+     * @param QueuePartitionName|null $queuePartition only needed for queue_strategy "partitioned_replace"
      * @throws \JsonException
      */
-    public function schedulePipeline(PipelineName $pipeline, array $variables): JobId
+    public function schedulePipeline(PipelineName $pipeline, array $variables, ?QueuePartitionName $queuePartition = null): JobId
     {
-        $response = $this->apiCall('POST', 'pipelines/schedule', json_encode([
+        $requestBody = [
             'pipeline' => $pipeline->getName(),
-            'variables' => $variables
-        ], JSON_THROW_ON_ERROR | JSON_FORCE_OBJECT));
+            'variables' => $variables,
+        ];
+
+        if ($queuePartition !== null) {
+            $requestBody['queuePartition'] = $queuePartition->getName();
+        }
+
+        $response = $this->apiCall('POST', 'pipelines/schedule', json_encode($requestBody, JSON_THROW_ON_ERROR | JSON_FORCE_OBJECT));
         if ($response->getStatusCode() !== 202) {
             throw new \RuntimeException('Scheduling a new pipeline run should have returned status code 202, but got: ' . $response->getStatusCode());
         }
