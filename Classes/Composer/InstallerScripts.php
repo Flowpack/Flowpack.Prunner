@@ -43,7 +43,7 @@ else
 fi
 EOD;
 
-    const DEFAULT_VERSION_TO_INSTALL = '1.0.1';
+    const DEFAULT_VERSION_TO_INSTALL = '1.4.0';
 
     /**
      * Downloads the prunner binaries from https://github.com/Flowpack/prunner to ./prunner.
